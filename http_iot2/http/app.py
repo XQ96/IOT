@@ -6,6 +6,7 @@
     :license: MIT, see LICENSE for more details.
 """
 import os
+import time
 try:
     from urlparse import urlparse, urljoin
 except ImportError:
@@ -17,11 +18,14 @@ from flask import Flask, make_response, request, redirect, url_for, abort, sessi
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'secret string')
+TIME = ['-'] * 7
 TEMP = ['-'] * 7
 
 def output(msg):
     TEMP.pop(0)
     TEMP.append(msg)
+    TIME.pop(0)
+    TIME.append(str(time.strftime('%H%M%S', time.localtime(time.time()))))
     with open('out_http.txt','a',encoding='utf-8') as f:
         f.write(msg+'\n')
 
@@ -36,7 +40,7 @@ def read_data(path):
         ans = ''
         for i in range(len(lines)):
             ans+=str(lines[i])
-            ans+=' '
+            ans+='\t'
         return ans
 
 # get name value from query string and cookie
@@ -51,8 +55,18 @@ def iot():
 
 @app.route('/show')
 def show():
-    print(TEMP)
-    response = '<h3>温度 http real-time data </h3> {}! \n'.format(str(TEMP))  # escape name to avoid XSS
+    # print(TEMP)
+    response = ''
+    temp = ''
+    for i in range(len(TEMP)):
+        temp += str(TEMP[i])
+        temp += '\t'
+    ti = ''
+    for i in range(len(TIME)):
+        ti += str(TIME[i])
+        ti += '\t'
+    response += '<h3>时间 </h3> {}'.format(ti)
+    response += '<h3>温度 http real-time data </h3> {}! \n'.format(temp)  # escape name to avoid XSS
     response += '<h3>旋钮 mqtt real-time data: </h3> {} \n'.format(read_data('../../mqtt/out_mqtt.txt'))
     response += '<h3>光敏  real-time data: </h3> {} \n'.format(read_data('../../out_coap.txt'))
     response += '<h3>超声波  real-time data: </h3> {} \n'.format(read_data('../../socket/out_socket.txt'))
