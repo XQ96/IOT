@@ -25,6 +25,15 @@ def output(msg):
     with open('out_http.txt','a',encoding='utf-8') as f:
         f.write(msg+'\n')
 
+def read_data(path):
+    lines = [] 
+    with open(path, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+    if len(lines) <7:
+        return lines
+    else:
+        return lines[-7:]
+
 # get name value from query string and cookie
 @app.route('/iot')
 def iot():
@@ -38,7 +47,8 @@ def iot():
 @app.route('/show')
 def show():
     print(TEMP)
-    response = '<h3>http real-time data is {}!</h3>'.format(str(TEMP))  # escape name to avoid XSS
+    response = '<h3>http real-time data </h3> {}! \n'.format(str(TEMP))  # escape name to avoid XSS
+    response += '<h3>mqtt real-time data: </h3> {} \n'.format(read_data('../../mqtt/out_mqtt.txt'))
     # return different response according to the user's authentication status
     return response
 
