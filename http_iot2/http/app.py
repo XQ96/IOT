@@ -39,8 +39,9 @@ def read_data(path):
         lines = list(map(str.strip,lines[-7:]))
         ans = ''
         for i in range(len(lines)):
+            ans += '<td>'
             ans+=str(lines[i])
-            ans+='&nbsp &nbsp &nbsp'
+            ans+='</td>'
         return ans
 
 # get name value from query string and cookie
@@ -56,21 +57,25 @@ def iot():
 @app.route('/show')
 def show():
     # print(TEMP)
-    response = ''
-    temp = ''
-    for i in range(len(TEMP)):
-        temp += str(TEMP[i])
-        temp += '&nbsp &nbsp &nbsp'
-    ti = ''
+    response = '<table border="1">'
+    ti = '<td> Time </td>'
     for i in range(len(TIME)):
-        ti += str(TIME[i])
-        ti += '&nbsp &nbsp &nbsp'
-    response += '<h3>时间 </h3> {}'.format(ti)
-    response += '<h3>温度 http real-time data </h3> {} \n'.format(temp)  # escape name to avoid XSS
-    response += '<h3>旋钮 mqtt real-time data: </h3> {} \n'.format(read_data('../../mqtt/out_mqtt.txt'))
-    response += '<h3>光敏  real-time data: </h3> {} \n'.format(read_data('../../out_coap.txt'))
-    response += '<h3>超声波  real-time data: </h3> {} \n'.format(read_data('../../socket/out_socket.txt'))
+        ti += '<td>{}</td>'.format(str(TIME[i]))
+        # ti += '&nbsp &nbsp &nbsp'
+
+    temp = '<td> 超声波 </td>'
+
+    for i in range(len(TEMP)):
+        temp += '<td>{}</td>'.format(str(TEMP[i]))
+        # temp += '&nbsp &nbsp &nbsp'
+
+    response += '<tr>{}</tr>'.format(ti)
+    response += '<tr>{}</tr>'.format(temp)  # escape name to avoid XSS
+    response += '<tr> <td> Rotation mqtt </td>{}</tr>'.format(read_data('../../mqtt/out_mqtt.txt'))
+    response += '<tr> <td> Light coap </td>{}</tr>'.format(read_data('../../out_coap.txt'))
+    response += '<tr> <td> Temprature socket </td>{}</tr>'.format(read_data('../../socket/out_socket.txt'))
     # return different response according to the user's authentication status
+    response += '</table>'
     return response
 
 # get name value from query string and cookie
