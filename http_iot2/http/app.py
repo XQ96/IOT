@@ -40,7 +40,7 @@ def read_data(path):
         ans = ''
         for i in range(len(lines)):
             ans+=str(lines[i])
-            ans+='\t\t\t'
+            ans+='   '
         return ans
 
 # get name value from query string and cookie
@@ -60,11 +60,11 @@ def show():
     temp = ''
     for i in range(len(TEMP)):
         temp += str(TEMP[i])
-        temp += '\t\t\t'
+        temp += '   '
     ti = ''
     for i in range(len(TIME)):
         ti += str(TIME[i])
-        ti += '\t\t\t'
+        ti += '   '
     response += '<h3>时间 </h3> {}'.format(ti)
     response += '<h3>温度 http real-time data </h3> {} \n'.format(temp)  # escape name to avoid XSS
     response += '<h3>旋钮 mqtt real-time data: </h3> {} \n'.format(read_data('../../mqtt/out_mqtt.txt'))
