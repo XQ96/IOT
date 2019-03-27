@@ -32,7 +32,12 @@ def read_data(path):
     if len(lines) <7:
         return lines
     else:
-        return lines[-7:]
+        lines = list(map(str.strip,lines[-7:]))
+        ans = ''
+        for i in range(len(lines)):
+            ans+=str(lines[i])
+            ans+=' '
+        return ans
 
 # get name value from query string and cookie
 @app.route('/iot')
@@ -49,6 +54,8 @@ def show():
     print(TEMP)
     response = '<h3>温度 http real-time data </h3> {}! \n'.format(str(TEMP))  # escape name to avoid XSS
     response += '<h3>旋钮 mqtt real-time data: </h3> {} \n'.format(read_data('../../mqtt/out_mqtt.txt'))
+    response += '<h3>光敏  real-time data: </h3> {} \n'.format(read_data('../../out_coap.txt'))
+    response += '<h3>超声波  real-time data: </h3> {} \n'.format(read_data('../../socket/out_socket.txt'))
     # return different response according to the user's authentication status
     return response
 
