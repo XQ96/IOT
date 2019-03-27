@@ -47,8 +47,8 @@ def iot():
 @app.route('/show')
 def show():
     print(TEMP)
-    response = '<h3>http real-time data </h3> {}! \n'.format(str(TEMP))  # escape name to avoid XSS
-    response += '<h3>mqtt real-time data: </h3> {} \n'.format(read_data('../../mqtt/out_mqtt.txt'))
+    response = '<h3>温度 http real-time data </h3> {}! \n'.format(str(TEMP))  # escape name to avoid XSS
+    response += '<h3>旋钮 mqtt real-time data: </h3> {} \n'.format(read_data('../../mqtt/out_mqtt.txt'))
     # return different response according to the user's authentication status
     return response
 
