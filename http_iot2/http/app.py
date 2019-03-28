@@ -40,7 +40,8 @@ def read_data(path):
         ans = ''
         for i in range(len(lines)):
             ans += '<td>'
-            ans+=str(lines[i])
+            temp = str(lines[i]).split()[-1].strip()
+            ans+= temp
             ans+='</td>'
         return ans
 
@@ -126,141 +127,6 @@ def teapot(drink):
 def not_found():
     abort(404)
 
-
-# return response with different formats
-@app.route('/note', defaults={'content_type': 'text'})
-@app.route('/note/<content_type>')
-def note(content_type):
-    content_type = content_type.lower()
-    if content_type == 'text':
-        body = '''Note
-to: Peter
-from: Jane
-heading: Reminder
-body: Don't forget the party!
-'''
-        response = make_response(body)
-        response.mimetype = 'text/plain'
-    elif content_type == 'html':
-        body = '''<!DOCTYPE html>
-<html>
-<head></head>
-<body>
-  <h1>Note</h1>
-  <p>to: Peter</p>
-  <p>from: Jane</p>
-  <p>heading: Reminder</p>
-  <p>body: <strong>Don't forget the party!</strong></p>
-</body>
-</html>
-'''
-        response = make_response(body)
-        response.mimetype = 'text/html'
-    elif content_type == 'xml':
-        body = '''<?xml version="1.0" encoding="UTF-8"?>
-<note>
-  <to>Peter</to>
-  <from>Jane</from>
-  <heading>Reminder</heading>
-  <body>Don't forget the party!</body>
-</note>
-'''
-        response = make_response(body)
-        response.mimetype = 'application/xml'
-    elif content_type == 'json':
-        body = {"note": {
-            "to": "Peter",
-            "from": "Jane",
-            "heading": "Remider",
-            "body": "Don't forget the party!"
-        }
-        }
-        response = jsonify(body)
-        # equal to:
-        # response = make_response(json.dumps(body))
-        # response.mimetype = "application/json"
-    else:
-        abort(400)
-    return response
-
-
-# set cookie
-@app.route('/set/<name>')
-def set_cookie(name):
-    response = make_response(redirect(url_for('hello')))
-    response.set_cookie('name', name)
-    return response
-
-
-# log in user
-@app.route('/login')
-def login():
-    session['logged_in'] = True
-    return redirect(url_for('hello'))
-
-
-# protect view
-@app.route('/admin')
-def admin():
-    if 'logged_in' not in session:
-        abort(403)
-    return 'Welcome to admin page.'
-
-
-# log out user
-@app.route('/logout')
-def logout():
-    if 'logged_in' in session:
-        session.pop('logged_in')
-    return redirect(url_for('hello'))
-
-
-# AJAX
-@app.route('/post')
-def show_post():
-    post_body = generate_lorem_ipsum(n=2)
-    return '''
-<h1>A very long post</h1>
-<div class="body">%s</div>
-<button id="load">Load More</button>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script type="text/javascript">
-$(function() {
-    $('#load').click(function() {
-        $.ajax({
-            url: '/more',
-            type: 'get',
-            success: function(data){
-                $('.body').append(data);
-            }
-        })
-    })
-})
-</script>''' % post_body
-
-
-@app.route('/more')
-def load_post():
-    return generate_lorem_ipsum(n=1)
-
-
-# redirect to last page
-@app.route('/foo')
-def foo():
-    return '<h1>Foo page</h1><a href="%s">Do something and redirect</a>' \
-           % url_for('do_something', next=request.full_path)
-
-
-@app.route('/bar')
-def bar():
-    return '<h1>Bar page</h1><a href="%s">Do something and redirect</a>' \
-           % url_for('do_something', next=request.full_path)
-
-
-@app.route('/do-something')
-def do_something():
-    # do something here
-    return redirect_back()
 
 
 def is_safe_url(target):
