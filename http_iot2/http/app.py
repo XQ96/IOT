@@ -23,7 +23,7 @@ TEMP = ['-'] * 7
 
 def output(msg):
     TEMP.pop(0)
-    TEMP.append(msg)
+    TEMP.append(str(msg).split()[-1].strip())
     TIME.pop(0)
     TIME.append(str(time.strftime('%H:%M:%S', time.localtime(time.time()))))
     with open('out_http.txt','a',encoding='utf-8') as f:
